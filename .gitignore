@@ -1,0 +1,15 @@
+# Node
+node_modules/
+
+# Python (cliente de demonstração em Streamlit)
+.venv/
+__pycache__/
+*.pyc
+
+# Variáveis de ambiente — nunca versionar segredos
+.env
+
+# Enunciado do trabalho (material do professor, fica só local)
+*.pdf
+
+.DS_Store
