@@ -14,6 +14,10 @@ function errorHandler(err, req, res, next) {
     return res.status(400).json({ erro: 'Dados inválidos', detalhes });
   }
 
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({ erro: 'JSON malformado no corpo da requisição' });
+  }
+
   if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
     return res.status(401).json({ erro: 'Token inválido ou expirado' });
   }

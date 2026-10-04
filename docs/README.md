@@ -7,6 +7,7 @@ Leia na ordem. Cada documento é escrito no momento em que a parte correspondent
 | # | Documento | Assunto |
 |---|---|---|
 | 00 | [Visão geral](00-visao-geral.md) | O que estamos construindo, o que o professor exige e como o projeto se organiza |
+| 01 | [Inicialização e banco](01-inicializacao-e-banco.md) | Como a API liga, o caminho de uma requisição, o tratamento de erros, o Express 5 e o Prisma |
 
 ## Como usar estes documentos para estudar
 
