@@ -1,6 +1,17 @@
 const { ZodError } = require('zod');
 const AppError = require('../utils/AppError');
 
+// Mensagens que escrevemos nos schemas já estão em português;
+// estas são as mensagens padrão do Zod que ainda vêm em inglês.
+function traduzirErroZod(e) {
+  if (e.code === 'invalid_type' && e.received === 'undefined') return 'Campo obrigatório';
+  if (e.code === 'invalid_type' && e.message.startsWith('Expected')) {
+    return `Tipo inválido: esperado ${e.expected}`;
+  }
+  if (e.code === 'invalid_enum_value') return `Valor inválido. Use: ${e.options.join(', ')}`;
+  return e.message;
+}
+
 function errorHandler(err, req, res, next) {
   if (err instanceof AppError) {
     return res.status(err.status).json({ erro: err.message });
@@ -9,7 +20,7 @@ function errorHandler(err, req, res, next) {
   if (err instanceof ZodError) {
     const detalhes = err.errors.map((e) => ({
       campo: e.path.join('.'),
-      mensagem: e.message,
+      mensagem: traduzirErroZod(e),
     }));
     return res.status(400).json({ erro: 'Dados inválidos', detalhes });
   }

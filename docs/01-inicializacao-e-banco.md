@@ -82,7 +82,7 @@ Em vez de cada rota decidir como responder um erro, **todas** as rotas só lanç
 | `JsonWebTokenError` / `TokenExpiredError` | Token inválido ou vencido | 401 |
 | Prisma `P2002` | Valor repetido num campo `@unique` (ex.: CPF já cadastrado) | 409 |
 | Prisma `P2025` | Registro não encontrado para atualizar ou remover | 404 |
-| Prisma `P2003` | Violação de chave estrangeira (ex.: remover um cliente que tem processos) | 409 |
+| Prisma `P2003` | Violação de chave estrangeira (ex.: gravar um processo apontando para um cliente que não existe) | 409 |
 | Qualquer outro | Bug ou falha inesperada | 500, sem detalhes para o cliente (o detalhe vai para o console) |
 
 Esconder o detalhe dos erros 500 é uma questão de **segurança**: mensagens internas podem revelar a estrutura do banco ou do código.
@@ -150,7 +150,7 @@ model Processo {
 
 - `@map` / `@@map`: no JavaScript usamos `camelCase` (`clienteId`); no banco, `snake_case` (`cliente_id`). O Prisma traduz.
 - `clienteId` é a **coluna** real, a chave estrangeira. `cliente` é só um **atalho** do Prisma para navegar até o objeto Cliente, e não vira coluna.
-- `onDelete: Restrict`: o banco **recusa** apagar um cliente que ainda tem processos. Isso protege contra processos "órfãos", e o erro vira 409 no `errorHandler` (código `P2003`).
+- `onDelete: Restrict`: o banco **recusa** apagar um cliente que ainda tem processos. Isso protege contra processos "órfãos" mesmo que o código tenha um bug. Veja a pergunta no fim do documento.
 - `enum StatusProcesso`: o status só pode ser `ativo`, `arquivado` ou `encerrado`. Quem garante isso é o próprio banco.
 
 ## Perguntas prováveis na arguição
@@ -188,5 +188,7 @@ O schema descreve como as tabelas **devem** ser. A migration é o SQL que **cria
 <details>
 <summary>O que acontece se tentarmos apagar um cliente que tem processos?</summary>
 
-A relação está com `onDelete: Restrict`, então o PostgreSQL recusa a operação. O Prisma lança um erro com código `P2003`, e o `errorHandler` responde 409 (conflito). Para apagar o cliente, primeiro é preciso apagar ou transferir os processos dele.
+A relação está com `onDelete: Restrict`, então o PostgreSQL recusa a operação (erro `23001`, "restrict violation"), e nenhum processo fica órfão. Para apagar o cliente, primeiro é preciso apagar ou transferir os processos dele.
+
+Detalhe que testamos na prática: o Prisma 5 não converte esse erro `23001` num código `P...`, então ele chegaria ao `errorHandler` como erro desconhecido (500). Hoje a API não tem rota para apagar clientes. Se um dia tiver, o certo é o **service** conferir antes se o cliente tem processos e lançar `AppError('Cliente possui processos', 409)`. A regra de negócio fica explícita no código, e a restrição do banco continua como última proteção.
 </details>

@@ -8,6 +8,8 @@ Leia na ordem. Cada documento é escrito no momento em que a parte correspondent
 |---|---|---|
 | 00 | [Visão geral](00-visao-geral.md) | O que estamos construindo, o que o professor exige e como o projeto se organiza |
 | 01 | [Inicialização e banco](01-inicializacao-e-banco.md) | Como a API liga, o caminho de uma requisição, o tratamento de erros, o Express 5 e o Prisma |
+| 02 | [Camadas e CRUD](02-camadas-e-crud.md) | Rotas → controllers → services seguindo um `POST /processos`, validação com Zod e endpoints de Clientes e Processos |
+| 03 | [Autenticação](03-autenticacao.md) | Cadastro e login, hash de senha com bcrypt, JWT e o middleware de rota protegida |
 
 ## Como usar estes documentos para estudar
 
