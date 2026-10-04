@@ -10,6 +10,7 @@ Leia na ordem. Cada documento é escrito no momento em que a parte correspondent
 | 01 | [Inicialização e banco](01-inicializacao-e-banco.md) | Como a API liga, o caminho de uma requisição, o tratamento de erros, o Express 5 e o Prisma |
 | 02 | [Camadas e CRUD](02-camadas-e-crud.md) | Rotas → controllers → services seguindo um `POST /processos`, validação com Zod e endpoints de Clientes e Processos |
 | 03 | [Autenticação](03-autenticacao.md) | Cadastro e login, hash de senha com bcrypt, JWT e o middleware de rota protegida |
+| 04 | [Roteiro da apresentação](04-roteiro-da-apresentacao.md) | Checklist, divisão da fala, decisão de design a apresentar e planos B |
 
 ## Como usar estes documentos para estudar
 
