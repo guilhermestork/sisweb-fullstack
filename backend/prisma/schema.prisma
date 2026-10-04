@@ -1,0 +1,58 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum StatusProcesso {
+  ativo
+  arquivado
+  encerrado
+
+  @@map("status_processo")
+}
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senhaHash String   @map("senha_hash")
+  criadoEm  DateTime @default(now()) @map("criado_em")
+
+  processos Processo[] @relation("processoResponsavel")
+
+  @@map("usuarios")
+}
+
+model Cliente {
+  id       Int      @id @default(autoincrement())
+  nome     String
+  cpf      String   @unique
+  email    String?
+  telefone String?
+  criadoEm DateTime @default(now()) @map("criado_em")
+
+  processos Processo[]
+
+  @@map("clientes")
+}
+
+model Processo {
+  id           Int            @id @default(autoincrement())
+  numero       String         @unique
+  vara         String
+  comarca      String
+  status       StatusProcesso @default(ativo)
+  clienteId    Int            @map("cliente_id")
+  usuarioId    Int            @map("usuario_responsavel_id")
+  criadoEm     DateTime       @default(now()) @map("criado_em")
+  atualizadoEm DateTime       @updatedAt @map("atualizado_em")
+
+  cliente            Cliente @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  usuarioResponsavel Usuario @relation("processoResponsavel", fields: [usuarioId], references: [id], onDelete: Restrict)
+
+  @@map("processos")
+}
